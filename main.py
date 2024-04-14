@@ -1,39 +1,27 @@
-import random
-from random import choice
-import os
 import asyncio
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command, CommandStart
-from dotenv import load_dotenv
-from os import getenv
+from aiogram import Bot
 import logging
 
-load_dotenv()
-bot = Bot(token=getenv('BOT_TOKEN'))
-dp = Dispatcher()
-
-@dp.message(Command('start'))
-async def start_cmd(message: types.Message):
-    await message.answer('Привет')
-
-@dp.message(Command('info'))
-async def info_cmd(message: types.Message):
-    await message.answer(f"ваш никнейм: {message.from_user.username}\n"
-                         f"ваш Id: {message.from_user.id}")
-
-@dp.message(Command('picture'))
-async def send_picture(message: types.Message):
-    photos = ['forest.jpeg', 'images.jpeg']
-    file = types.FSInputFile(f'images/{choice(photos)}')
-    await message.answer_photo(photo=file, caption='ЛЕс')
-
-@dp.message()
-async def echo(message: types.Message):
-    logging.info(message.text)
-    await message.answer(message.text)
-
+from cofig import bot, dp
+from handlers.start import start_router
+from handlers.picture import pic_router
+from handlers.info import info_router
+from handlers.echo import echo_router
+from handlers.menu import menu_router
 async def main():
+
+    # привязка роутеров
+    dp.include_router(start_router)
+    dp.include_router(menu_router)
+    dp.include_router(pic_router)
+    dp.include_router(info_router)
+
+
+    # в самом конце!
+    dp.include_router(echo_router)
+    # запуск бота
     await dp.start_polling(bot)
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
