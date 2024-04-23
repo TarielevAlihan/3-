@@ -1,5 +1,5 @@
 import aiosqlite
-from Data_Base.queries import Queries
+from data_base.queries import Queries
 
 
 class Database:

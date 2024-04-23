@@ -7,8 +7,8 @@ from aiogram import Router, types , F
 menu_router = Router()
 
 
-@menu_router.message(Command('menu'))
-async def menu_cmd(message: types.Message):
+@menu_router.callback_query(F.data == 'menu')
+async def menu_cmd(callback: types.CallbackQuery):
     kd = types.ReplyKeyboardMarkup(
         keyboard=[
             [
@@ -18,7 +18,7 @@ async def menu_cmd(message: types.Message):
             ]
         ]
     )
-    await message.answer("Выберите категорию меню:", reply_markup=kd)
+    await callback.message.answer("Выберите категорию меню:", reply_markup=kd)
 
 
 @menu_router.message(F.text == 'Блюда')
