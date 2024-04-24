@@ -79,11 +79,13 @@ async def process_question(message: types.Message, state:FSMContext):
 async def process_question(message: types.Message, state:FSMContext):
     await state.update_data(question2=message.text)
     await state.set_state(BookSurvey.end)
-    await message.answer("Спасибо за пройденный опрос!")
+   # await message.answer("Спасибо за пройденный опрос!")
 
 @survey_router.message(BookSurvey.end)
-async def process_end(message: types.Message, state : FSMContext):
+async def process_end(message: types.Message, state: FSMContext):
     await state.update_data(end=message.text)
+
+
     data = await state.get_data()
     await database.execute(
         "INSERT INTO survey (name, age, data1, revew, question, question1, question2) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -91,4 +93,5 @@ async def process_end(message: types.Message, state : FSMContext):
         data["name"], data["age"], data["data1"], data["revew"], data["question"], data["question1"], data["question2"])
     )
     await message.answer("Спасибо за пройденный опрос!")
-    await state.clear(BookSurvey.end)
+    await state.clear()
+    
